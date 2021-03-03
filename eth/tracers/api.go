@@ -581,8 +581,8 @@ func (api *API) standardTraceBlockToFile(ctx context.Context, block *types.Block
 		chainConfigCopy := new(params.ChainConfig)
 		*chainConfigCopy = *chainConfig
 		chainConfig = chainConfigCopy
-		if yolov3 := config.LogConfig.Overrides.YoloV3Block; yolov3 != nil {
-			chainConfig.YoloV3Block = yolov3
+		if berlin := config.LogConfig.Overrides.BerlinBlock; berlin != nil {
+			chainConfig.BerlinBlock = berlin
 			canon = false
 		}
 	}
@@ -753,14 +753,15 @@ func (api *API) traceTx(ctx context.Context, message core.Message, vmctx vm.Bloc
 	default:
 		tracer = vm.NewStructLogger(config.LogConfig)
 	}
+
 	// Run the transaction with tracing enabled.
 	vmenv := vm.NewEVM(vmctx, txContext, statedb, api.backend.ChainConfig(), vm.Config{Debug: true, Tracer: tracer})
-
 	result, err := core.ApplyMessage(vmenv, message, new(core.GasPool).AddGas(message.Gas()))
 	if err != nil {
 		return nil, fmt.Errorf("tracing failed: %v", err)
 	}
-	// Depending on the tracer type, format and return the output
+
+	// Depending on the tracer type, format and return the output.
 	switch tracer := tracer.(type) {
 	case *vm.StructLogger:
 		// If the result contains a revert reason, return it.
