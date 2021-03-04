@@ -856,7 +856,6 @@ func (c *Congress) decreaseMissedBlocksCounter(chain consensus.ChainHeaderReader
 func (c *Congress) Authorize(validator common.Address, signFn ValidatorFn) {
 	c.lock.Lock()
 	defer c.lock.Unlock()
-
 	c.validator = validator
 	c.signFn = signFn
 }
@@ -886,6 +885,8 @@ func (c *Congress) Seal(chain consensus.ChainHeaderReader, block *types.Block, r
 	if err != nil {
 		return err
 	}
+
+	//log.Info(fmt.Sprintf("validator is %s. validators %#v", val.String(), snap.Validators))
 	if _, authorized := snap.Validators[val]; !authorized {
 		return errUnauthorizedValidator
 	}
