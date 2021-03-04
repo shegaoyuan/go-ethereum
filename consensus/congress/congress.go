@@ -20,7 +20,6 @@ package congress
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"io"
 	"math"
 	"math/big"
@@ -886,7 +885,8 @@ func (c *Congress) Seal(chain consensus.ChainHeaderReader, block *types.Block, r
 	if err != nil {
 		return err
 	}
-	log.Info(fmt.Sprintf("validator is %s. validators %#v", val.String(), snap.Validators))
+
+	//log.Info(fmt.Sprintf("validator is %s. validators %#v", val.String(), snap.Validators))
 	if _, authorized := snap.Validators[val]; !authorized {
 		return errUnauthorizedValidator
 	}
